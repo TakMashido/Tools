@@ -1,0 +1,3 @@
+Make possible usage of non integer indexs.
+Add more array based Plots(int, double, ...).
+Add option of drawing plots from 2d arrays.
