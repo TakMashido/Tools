@@ -30,7 +30,7 @@ public class PlotPanel extends JPanel{
 	 * @param plots Plots to draw.
 	 * @return Created window.
 	 */
-	public JFrame showWindow(Plot... plots) {
+	public static JFrame showWindow(Plot... plots) {
 		return showWindow("Plot",plots);
 	}
 	/**Creates new window containing PlotPanel with given plots.
@@ -38,7 +38,7 @@ public class PlotPanel extends JPanel{
 	 * @param plots Plots to draw.
 	 * @return Created window.
 	 */
-	public JFrame showWindow(String title,Plot... plots) {
+	public static JFrame showWindow(String title,Plot... plots) {
 		JFrame frame=new JFrame();
 		frame.add(new PlotPanel(plots));
 		frame.setTitle(title);
