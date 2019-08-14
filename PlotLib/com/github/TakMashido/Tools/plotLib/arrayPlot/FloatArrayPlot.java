@@ -1,9 +1,6 @@
 package com.github.TakMashido.Tools.plotLib.arrayPlot;
 
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.github.TakMashido.Tools.plotLib.Avaraging;
 import com.github.TakMashido.Tools.plotLib.AvaragingException;
@@ -12,34 +9,34 @@ import com.github.TakMashido.Tools.plotLib.Plot;
 /**Generates plot from short array;
  * @author TakMashido
  */
-public class ShortArrayPlot extends Plot{
-	private short[] data;
+public class FloatArrayPlot extends Plot{
+	private float[] data;
 	private Avaraging avaraging=Avaraging.AVARAGE;
 	
 	private float max=Float.NaN;
 	private float min=Float.NaN;
 	
-	public ShortArrayPlot(short[] array) {
+	public FloatArrayPlot(float[] array) {
 		data=array;
 	}
-	public ShortArrayPlot(short[] array, Avaraging avar) {
-		data=array;
-		setAvaraging(avar);
-	}
-	public ShortArrayPlot(String name, short[] array) {
-		super(name);
-		data=array;
-	}
-	public ShortArrayPlot(String name,short[] array, Avaraging avar) {
-		super(name);
+	public FloatArrayPlot(float[] array, Avaraging avar) {
 		data=array;
 		setAvaraging(avar);
 	}
-	public ShortArrayPlot(String name, Color color, short[] array) {
+	public FloatArrayPlot(String name, float[] array) {
+		super(name);
+		data=array;
+	}
+	public FloatArrayPlot(String name,float[] array, Avaraging avar) {
+		super(name);
+		data=array;
+		setAvaraging(avar);
+	}
+	public FloatArrayPlot(String name, Color color, float[] array) {
 		super(name,color);
 		data=array;
 	}
-	public ShortArrayPlot(String name, Color color, short[] array, Avaraging avar) {
+	public FloatArrayPlot(String name, Color color, float[] array, Avaraging avar) {
 		super(name,color);
 		data=array;
 		setAvaraging(avar);
@@ -56,7 +53,7 @@ public class ShortArrayPlot extends Plot{
 		if(startIndex<0)startIndex=0;
 		if(endIndex>data.length)endIndex=data.length;
 		
-		int Return=0;
+		float Return=0;
 		switch(avaraging) {
 		case MAX:
 			Return=Integer.MIN_VALUE;
@@ -76,30 +73,6 @@ public class ShortArrayPlot extends Plot{
 				ret+=data[i];
 			}
 			return (float) (ret/(endIndex-startIndex));
-		case MOST_FREQUENT:
-			HashMap<Short,AtomicInteger> occurences=new HashMap<Short,AtomicInteger>();
-			for(int i=startIndex;i<endIndex;i++) {
-				AtomicInteger val=occurences.get(data[i]);
-				if(val==null) {
-					occurences.put(data[i], new AtomicInteger(1));
-				} else {
-					val.incrementAndGet();
-				}
-			}
-			
-			Iterator<Short> keys=occurences.keySet().iterator();
-			int max=0;
-			float val=0;
-			while(keys.hasNext()) {
-				short tempVal=keys.next();
-				int occ=occurences.get(tempVal).get();
-				if(occ>max) {
-					max=occ;
-					val=tempVal;
-				}
-			}
-			
-			return val;
 		default: throw new AvaragingException();
 		}
 	}
@@ -116,19 +89,19 @@ public class ShortArrayPlot extends Plot{
 	}
 	
 	@Override
-	public float getMax() {
-		if(max!=max) {
-			max=-Float.MAX_VALUE;
-			for(Short dat:data)if(dat>max)max=dat;
-		}
-		return max;
-	}
-	@Override
 	public float getMin() {
 		if(min!=min) {
 			min=Float.MAX_VALUE;
-			for(Short dat:data)if(dat<min)min=dat;
+			for(Float dat:data)if(dat<min)min=dat;
 		}
 		return min;
+	}
+	@Override
+	public float getMax() {
+		if(max!=max) {
+			max=-Float.MAX_VALUE;
+			for(Float dat:data)if(dat>max)max=dat;
+		}
+		return max;
 	}
 }

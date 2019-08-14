@@ -47,6 +47,15 @@ public abstract class Plot {
 	 */
 	public abstract float get(int startIndex,int endIndex);
 	
+	/**Return maximum value of plot or NaN if unknow.
+	 * @return Read above.
+	 */
+	public abstract float getMax();
+	/**Return minimum value of plot or NaN if unknow.
+	 * @return Read above.
+	 */
+	public abstract float getMin();
+	
 	/**Returns preffered size of graph or -1 if not know.
 	 * @return Read above.
 	 */

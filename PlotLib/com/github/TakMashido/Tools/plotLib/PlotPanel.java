@@ -3,13 +3,11 @@ package com.github.TakMashido.Tools.plotLib;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
-import com.github.TakMashido.Tools.plotLib.arrayPlot.ShortArrayPlot;
 
 public class PlotPanel extends JPanel{
 	private static final long serialVersionUID = -2369931890928429839L;
@@ -63,12 +61,12 @@ public class PlotPanel extends JPanel{
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, maxX, maxY);
 		
-		int nameY=10;
+		int plotIndex=-1;
 		for(Plot plot:plots) {
+			plotIndex++;
 			g.setColor(plot.color);
 			
-			g.drawString(plot.getName(), 2, nameY);
-			nameY+=10;
+			g.drawString(plot.getName(), maxX-g.getFontMetrics().stringWidth(plot.getName())-4, plotIndex*11+10);
 			
 			float jump=plot.getSize();
 			if(jump==-1) throw new RuntimeException("Plots with unknown size are not supported yet.");
@@ -86,8 +84,15 @@ public class PlotPanel extends JPanel{
 					data[i]=plot.get(intIndex, intEndIndex);
 				index=endIndex;
 			}
-			normalize(data);
 			
+			float min=plot.getMin();
+			if(min!=min)min=getMin(data);
+			float max=plot.getMax();
+			if(max!=max)max=getMax(data);
+			normalize(data,min,max);
+			
+			g.drawString(String.format("%.2f", max), 2, plotIndex*11+10);
+			g.drawString(String.format("%.2f", min), 2, maxY-plotIndex*11-4);
 			
 			int ind=0;
 			int lastX=0;
@@ -108,14 +113,21 @@ public class PlotPanel extends JPanel{
 		}
 	}
 	
-	private static void normalize(float[] data) {
-		float min=0;
-		float max=0;
-		for(float val:data) {
-			if(val<min) min=val;
-			if(val>max) max=val;
+	private static float getMin(float[] data) {
+		float min=Float.MAX_VALUE;
+		for(Float dat:data)if(dat<min)min=dat;
+		return min;
+	}
+	private static float getMax(float[] data) {
+		float max=-Float.MAX_VALUE;
+		for(Float dat:data)if(dat<max)max=dat;
+		return max;
+	}
+	private static void normalize(float[] data, float min, float max) {
+		if(min==max) {
+			Arrays.fill(data, .5f);
+			return;
 		}
-		if(max==0) return;
 		min*=-1.02f;
 		max*=1.02f;
 		max+=min;
