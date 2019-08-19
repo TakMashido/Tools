@@ -1,5 +1,7 @@
-package com.github.TakMashido.Tools.cssInspector;
+package com.github.TakMashido.Tools.cssTools;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -13,17 +15,16 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 
-/**Set(TODO) of tools to help creating and debuging javafx css.
+/**Set of tools to help creating and debuging javafx css.
  * @author TakMashido
 */
-public class CssInspector {
+public class CssTools {
 	/**Prints tree of style classes and pseudoclasses of given javafx gui element(Node or MenuItem) and child elements of it.
 	 * @param styleable Element to examine.
 	 */
 	public static void inspectCssTree(Styleable styleable) {
 		inspectCssTree(styleable, 0);
 	}
-	
 	/**Prints tree of style classes and pseudoclasses of given javafx gui element(Node or MenuItem) and childen elements of it.
 	 * @param styleable Element to examine.
 	 * @param level Number of /t inserted before {@code styleable} elements classes.
@@ -36,8 +37,6 @@ public class CssInspector {
 		if(haveChilds)for(int i=0;i<level;i++)System.out.print("\t");
 		System.out.println("}");
 	}
-	
-	
 	/**Invoces {@link #inspectChilds(Styleable, int)} on each child of given element.
 	 * @param styleable Element to examine
 	 * @param level Amount of /t before each elements classes.
@@ -92,5 +91,45 @@ public class CssInspector {
 			for(int i=0;i<level;i++)System.out.print("\t");
 			System.out.print("NONE");
 		}
+	}
+	
+	
+	/**Apply css to given parent and refresh it every time orginal file changed.
+	 * @param target Parent to apply css.
+	 * @param css Css to apply
+	 * @return Thread responsible for refreshing.
+	 */
+	public static Thread addCssRefresher(Parent target, File css) {
+		Thread cssRefreasher=new Thread() {
+			public void run() {
+				long lastModified=css.lastModified();
+				String cssPath=null;
+				try {
+					cssPath = css.toURI().toURL().toExternalForm();
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				int index=target.getStylesheets().size();
+				target.getStylesheets().add(cssPath);
+				
+				while(true) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						break;
+					}
+					
+					long newLastModified=css.lastModified();
+					if(newLastModified!=lastModified) {
+						lastModified=newLastModified;
+						target.getStylesheets().set(index,cssPath);
+					}
+				}
+			}
+		};
+		cssRefreasher.setDaemon(true);
+		cssRefreasher.start();
+		return cssRefreasher;
 	}
 }

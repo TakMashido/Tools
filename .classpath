@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="GraphMaker"/>
 	<classpathentry kind="src" path="PlotLib"/>
-	<classpathentry kind="src" path="CSSInspector"/>
+	<classpathentry kind="src" path="CSSTools"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
