@@ -115,8 +115,9 @@ public class Stopwatch{
 		isPreviousMoment=true;
 	}
 	
-	/**End all periods and moments, update fullPeriod time and start new period.*/
-	public void tick() {
+	/**End all periods and moments, update fullPeriod time and start new period.
+	 * @return time of whole tick in ms*/
+	public double tick() {
 		while(!periodNames.empty())
 			endPeriod();
 		
@@ -129,6 +130,8 @@ public class Stopwatch{
 		}
 		
 		lastTick=System.nanoTime();
+		
+		return time/1e6d;
 	}
 	
 	@Override
@@ -159,24 +162,33 @@ public class Stopwatch{
 			builder.append("  ");
 	}
 	
-	/**Call {@link #tick()} and print data to stdout.*/
-	public void printoutTick() {
-		printTick(System.out);
+	/**Call {@link #tick()} and print data to stdout.
+	 * @return time of whole tick in ms*/
+	public double printoutTick() {
+		return printTick(System.out);
 	}
-	/**Call {@link #tick()} and print data to given stream.*/
-	public void printTick(PrintStream stream) {
-		tick();
+	/**Call {@link #tick()} and print data to given stream.
+	 * @param stream Stream into which data are printed.
+	 * @return time of whole tick in ms*/
+	public double printTick(PrintStream stream) {
+		double ret=tick();
 		stream.println(toString());
+		return ret;
 	}
 	
-	/**Call {@link #tick()} and print full string to stdout.*/
-	public void fullPrintoutTick() {
-		fullPrintTick(System.out);
+	/**Call {@link #tick()} and print full string to stdout.
+	 * @return time of whole tick in ms*/
+	public double fullPrintoutTick() {
+		return fullPrintTick(System.out);
 	}
-	/**Call {@link #tick()} and print full string to given stream.*/
-	public void fullPrintTick(PrintStream stream) {
-		tick();
+	/**Call {@link #tick()} and print full string to given stream.
+	 * @param stream Stream into which data are printed.
+	 * @return time of whole tick in ms
+	 */
+	public double fullPrintTick(PrintStream stream) {
+		double ret=tick();
 		stream.println(toFullString());
+		return ret;
 	}
 	
 	static class StringTree{
