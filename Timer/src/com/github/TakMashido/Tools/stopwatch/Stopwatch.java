@@ -57,6 +57,8 @@ public class Stopwatch{
 		if(warmoutTicks>0)
 			return;
 		
+//		System.out.println("startPeriod "+periodNames.size());
+		
 		if(isPreviousMoment) {
 			endPeriod0();
 			isPreviousMoment=false;
@@ -68,6 +70,9 @@ public class Stopwatch{
 	 * @return Current period time in ms.
 	 */
 	public double endPeriod() {
+		if(warmoutTicks>0)
+			return 0;
+		
 		if(isPreviousMoment) {
 			endPeriod0();
 			isPreviousMoment=false;
@@ -78,6 +83,8 @@ public class Stopwatch{
 	private long endPeriod0() {
 		if(warmoutTicks>0)
 			return 0;
+		
+//		System.out.println("endPeriod0  "+periodNames.size());
 		
 		long time=System.nanoTime()-periodsTimes.pop();
 		String name=periodNames.pop();
@@ -122,10 +129,16 @@ public class Stopwatch{
 	 * @param name Name of moment to start.
 	 */
 	public void moment(String name) {
+		if(warmoutTicks>0)
+			return;
+		
+//		System.out.println("moment      "+periodNames.size());
+		
 		if(isPreviousMoment) {
 			endPeriod0();
 			isPreviousMoment=false;
 		}
+		
 		
 		startPeriod(name);
 		isPreviousMoment=true;
@@ -140,8 +153,10 @@ public class Stopwatch{
 			return 0;
 		}
 		
+		isPreviousMoment=false;
+		
 		while(!periodNames.empty())
-			endPeriod();
+			endPeriod0();
 		
 		long time=System.nanoTime()-lastTick;
 		
