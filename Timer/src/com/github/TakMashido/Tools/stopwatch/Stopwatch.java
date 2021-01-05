@@ -28,7 +28,17 @@ public class Stopwatch{
 	
 	private boolean isPreviousMoment=false;											//Is previously registered period a moment?
 	
+	private int warmoutTicks;
+	
+	/**Creates new stopwatch and starts it.*/
 	public Stopwatch() {
+		this(0);
+	}
+	/**Creates new stopwatch and starts it.
+	 * @param warmoutTime Amount of ticks to skip. Use if one ore more starting ticks takes way longer than rest.
+	 */
+	public Stopwatch(int warmoutTime) {
+		this.warmoutTicks=warmoutTime;
 		start();
 	}
 	
@@ -44,6 +54,9 @@ public class Stopwatch{
 	
 	/**Start new nested period.*/
 	public void startPeriod(String name) {
+		if(warmoutTicks>0)
+			return;
+		
 		if(isPreviousMoment) {
 			endPeriod0();
 			isPreviousMoment=false;
@@ -63,6 +76,9 @@ public class Stopwatch{
 		return endPeriod0()/1e6;
 	}
 	private long endPeriod0() {
+		if(warmoutTicks>0)
+			return 0;
+		
 		long time=System.nanoTime()-periodsTimes.pop();
 		String name=periodNames.pop();
 		
@@ -118,6 +134,12 @@ public class Stopwatch{
 	/**End all periods and moments, update fullPeriod time and start new period.
 	 * @return time of whole tick in ms*/
 	public double tick() {
+		if(warmoutTicks>0) {
+			warmoutTicks--;
+			lastTick=System.nanoTime();
+			return 0;
+		}
+		
 		while(!periodNames.empty())
 			endPeriod();
 		
